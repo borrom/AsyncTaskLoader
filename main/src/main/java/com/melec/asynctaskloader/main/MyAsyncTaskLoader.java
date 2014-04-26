@@ -24,7 +24,7 @@ public class MyAsyncTaskLoader extends AsyncTaskLoader<String> {
         SystemClock.sleep(5000); /** three seconds */
 
 
-        String result = "loadInBackground Result";
+        String result = "loadInBackground_Result";
 
 
 
