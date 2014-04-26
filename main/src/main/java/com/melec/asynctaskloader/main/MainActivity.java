@@ -16,7 +16,7 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
 
     MyAsyncTaskLoader loader;
 
-    TextView mTextView; //test
+    TextView mTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
