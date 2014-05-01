@@ -1,6 +1,6 @@
 package com.melec.asynctaskloader.main;
 
-import android.os.SystemClock;
+
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.app.FragmentActivity;
@@ -33,9 +33,10 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
     /**start asyncktaskloader*/
     public void mButton_clicked(View v){
 
-        SystemClock.sleep(1000);
+        mTextView.setText(""); /**clear textView*/
         Bundle args = new Bundle(1);
-        getSupportLoaderManager().initLoader(0,args,this);
+       // getSupportLoaderManager().initLoader(0,args,this);
+        getSupportLoaderManager().restartLoader(0,args,this);
 
     }
 
@@ -43,10 +44,9 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
     @Override
     public Loader<String> onCreateLoader(int id, Bundle args){
 
-        SystemClock.sleep(1000);
-        loader = new MyAsyncTaskLoader(getApplication());
-        loader.forceLoad();
 
+        loader = new MyAsyncTaskLoader(getApplication(),"test");
+        loader.forceLoad();
         Log.d("onCreateLoader","called");
 
       return loader;
@@ -57,12 +57,13 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
 
     @Override
     public void onLoadFinished(Loader<String> loader, String data){
-
-        SystemClock.sleep(1000);
-        getSupportLoaderManager().getLoader(0).onContentChanged();
-        mTextView.setText(data);
         Log.d("onLoadFinished","called");
 
+        /**causes do inBackgournd to get called again*/
+       // getSupportLoaderManager().getLoader(0).onContentChanged();
+
+        /**update textView*/
+        mTextView.setText(data);
     }
 
 
