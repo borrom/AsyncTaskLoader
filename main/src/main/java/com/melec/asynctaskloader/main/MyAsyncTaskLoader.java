@@ -1,6 +1,7 @@
 package com.melec.asynctaskloader.main;
 
 
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.content.AsyncTaskLoader;
 import android.content.Context;
@@ -10,9 +11,12 @@ import android.util.Log;
 public class MyAsyncTaskLoader extends AsyncTaskLoader<String> {
 
     private int count = 0;
-    private String args;
+    private Bundle args;
+    private final String HTTP_REQUEST_CODE = "requestCode";
+    private final String LOGIN = "login";
+    private String TAG;
     /**constructor*/
-    public MyAsyncTaskLoader (Context context, String args){
+    public MyAsyncTaskLoader (Context context, Bundle args){
         super(context);
         this.args = args;
     }
@@ -29,28 +33,38 @@ public class MyAsyncTaskLoader extends AsyncTaskLoader<String> {
 
 
     public String loadInBackground(){
-        Log.d("loadInBackground","called");
+        Log.d("loadInBackground", "called");
 
+         final String GET_USERNAME = "username";
+         String username;
+         String result;
 
         /**simulate a long running task*/
-        SystemClock.sleep(10000); /** three seconds */
+        SystemClock.sleep(5000); /** three seconds */
 
-        count++;
-      //  String result = "Count= " + Integer.toString(count);
-        String result = args;
+        TAG = args.getString(HTTP_REQUEST_CODE);
+
+           if(TAG != null) {
+
+           if (TAG.equals(LOGIN)) {
+               Log.d("TAG", TAG);
+               username = args.getString(GET_USERNAME);
+               result = username;
+
+               return  result;
+           }
+       }
 
 
-        Log.d("loadInBackground",result);
-        return  result;
+       return  null;
 
-
-    }
+ }
 
 
 
 
     @Override
-    public void deliverResult(String arg0){
+    public void deliverResult(String result){
         Log.d("deliverResult","called");
 
 
@@ -71,9 +85,11 @@ public class MyAsyncTaskLoader extends AsyncTaskLoader<String> {
         /**  super.deliverResult(apps);*/
          Log.d("deliverResult","loader isStarted");
 
-         super.deliverResult(arg0);
+         super.deliverResult(result);
 
-      }
+        }
+
+
 
 
         /** At this point we can release the resources associated with 'oldApps' if needed;
@@ -111,7 +127,7 @@ public class MyAsyncTaskLoader extends AsyncTaskLoader<String> {
     public void onReset(){
         super.onReset();
         /**ensure the loader is stopped*/
-        onStopLoading();
+      //  onStopLoading();
 
         /**At this point we can release the resources associated with 'apps' if needed*/
        /**
