@@ -3,5 +3,6 @@
 
     <string name="app_name">AsyncTaskLoader</string>
     <string name="mButton">Start AsyncTaskLoader</string>
+    <string name="loading">Loading...</string>
 
 </resources>

@@ -10,7 +10,7 @@ import android.util.Log;
 
 public class MyAsyncTaskLoader extends AsyncTaskLoader<String> {
 
-    private int count = 0;
+
     private Bundle args;
     private final String HTTP_REQUEST_CODE = "requestCode";
     private final String LOGIN = "login";
@@ -42,20 +42,24 @@ public class MyAsyncTaskLoader extends AsyncTaskLoader<String> {
         /**simulate a long running task*/
         SystemClock.sleep(5000); /** three seconds */
 
-        TAG = args.getString(HTTP_REQUEST_CODE);
+        if(args != null) {
 
-           if(TAG != null) {
+            TAG = args.getString(HTTP_REQUEST_CODE);
 
-           if (TAG.equals(LOGIN)) {
-               Log.d("TAG", TAG);
-               username = args.getString(GET_USERNAME);
-               result = username;
+            if (TAG != null) {
 
-               return  result;
-           }
-       }
+                if (TAG.equals(LOGIN)) {
+                    Log.d("TAG", TAG);
+                    username = args.getString(GET_USERNAME);
+                    result = username;
 
+                    return result;
+                }
+            }
 
+        } else{
+            return null;
+        }
        return  null;
 
  }

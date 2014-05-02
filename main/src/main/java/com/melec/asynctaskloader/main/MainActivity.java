@@ -1,7 +1,7 @@
 package com.melec.asynctaskloader.main;
 
 
-import android.os.SystemClock;
+import android.app.ProgressDialog;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.app.FragmentActivity;
@@ -18,12 +18,15 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
 
    MyAsyncTaskLoader loader;
 
-    private final String HTTP_REQUEST_CODE = "requestCode";
-    private final String LOGIN = "login";
-    private final String USERNAME = "username";
+   private final String HTTP_REQUEST_CODE = "requestCode";
+   private final String LOGIN = "login";
+   private final String USERNAME = "username";
 
    private TextView mTextView;
    private EditText usernameBox;
+   private ProgressDialog mPDialog;
+   private final String IS_PDIALOG_KEY = "is_pdialog";
+   private boolean IS_PDIALOG_SHOWING;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +36,37 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
 
             mTextView = (TextView) findViewById(R.id.mTextView);
             usernameBox = (EditText) findViewById(R.id.mEditText);
+            /**instantiate mPDialog*/
+            mPDialog = new ProgressDialog(this);
 
 
-            Bundle args = new Bundle(0);
-            getSupportLoaderManager().initLoader(0,args,this);
+        if(savedInstanceState != null) {
+            /**if we are been restored, init loader*/
+            getSupportLoaderManager().initLoader(0, null, this);
+
+            /**show dialog, if it was previously showing*/
+            IS_PDIALOG_SHOWING = savedInstanceState.getBoolean(IS_PDIALOG_KEY);
+
+            if(IS_PDIALOG_SHOWING){
+                showDialog();
+            }
+         }
+    }
+
+    /**Save mPDialog state*/
+    @Override
+    protected  void onSaveInstanceState(Bundle saveInstanceState){
+        super.onRestoreInstanceState(saveInstanceState);
+        if(mPDialog.isShowing()){
+            saveInstanceState.putBoolean(IS_PDIALOG_KEY,IS_PDIALOG_SHOWING);
+       }
+    }
 
 
-
-
+    @Override
+    protected void onStop(){
+        super.onStop();
+        hideDialog();
     }
 
     /**start asyncktaskloader*/
@@ -58,10 +84,15 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
             }
         }
 
+        /**show progress dialog*/
+        showDialog();
+
+        /**restart loader*/
        // getSupportLoaderManager().initLoader(0,args,this);
         getSupportLoaderManager().restartLoader(0, data, this);
 
-    }
+
+  }
 
 
     @Override
@@ -71,6 +102,8 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
         loader = new MyAsyncTaskLoader(getApplication(),args);
         loader.forceLoad();
         Log.d("onCreateLoader","called");
+
+
 
       return loader;
     }
@@ -82,7 +115,6 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
     public void onLoadFinished(Loader<String> loader, String data){
         Log.d("onLoadFinished", "called");
 
-        SystemClock.sleep(1500);
 
         /**causes do inBackgournd to get called again*/
        // getSupportLoaderManager().getLoader(0).onContentChanged();
@@ -91,9 +123,28 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
         if (data != null) {
             mTextView.setText("Welcome, " + data + "!");
         }
+
+        hideDialog();
     }
 
+    /**create progress dialog*/
+    private void showDialog(){
+        String message = getResources().getString(R.string.loading);
 
+        mPDialog.setMessage(message);
+        mPDialog.setCancelable(false);
+        mPDialog.show();
+
+        IS_PDIALOG_SHOWING = true;
+
+    }
+
+    private void hideDialog(){
+        if(mPDialog.isShowing()){
+            mPDialog.dismiss();
+            IS_PDIALOG_SHOWING = false;
+        }
+    }
 
     @Override
     public  void onLoaderReset(Loader<String> loader){
