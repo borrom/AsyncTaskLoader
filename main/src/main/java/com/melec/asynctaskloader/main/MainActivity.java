@@ -124,6 +124,8 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
             mTextView.setText("Welcome, " + data + "!");
         }
 
+        /**destroy loader*/
+       // getSupportLoaderManager().destroyLoader(0);
         hideDialog();
     }
 
@@ -149,7 +151,6 @@ public class MainActivity extends FragmentActivity implements LoaderManager.Load
     @Override
     public  void onLoaderReset(Loader<String> loader){
 
-        mTextView.setText("");
         Log.d("onLoaderReset","called");
 
     }

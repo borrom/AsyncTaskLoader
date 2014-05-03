@@ -131,7 +131,7 @@ public class MyAsyncTaskLoader extends AsyncTaskLoader<String> {
     public void onReset(){
         super.onReset();
         /**ensure the loader is stopped*/
-      //  onStopLoading();
+        onStopLoading();
 
         /**At this point we can release the resources associated with 'apps' if needed*/
        /**
@@ -148,8 +148,7 @@ public class MyAsyncTaskLoader extends AsyncTaskLoader<String> {
      * Helper function to take care of releasing resources associated with an actively loaded data set
      */
     private void onReleaseResources(String arg0){
-        // For a simple list there is nothing to do
-        // but for a Cursor we would close it here
+
     }
 
 
